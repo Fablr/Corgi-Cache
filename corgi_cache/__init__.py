@@ -17,7 +17,15 @@ class CorgiCache:
         return len(items) > 0
 
     def put_feed(self, data):
-        assert 'ID' in data
-        assert 'URL' in data
+        if 'ID' not in data or 'URL' not in data:
+            raise ValueError
         self.feeds.put_item(data=data)
+        return
+
+    def put_feed_batch(self, data):
+        with self.feeds.batch_write() as batch:
+            for item in data:
+                if 'ID' not in item or 'URL' not in data:
+                    raise ValueError
+                batch.put_item(data=item)
         return
