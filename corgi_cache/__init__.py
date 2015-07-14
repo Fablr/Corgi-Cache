@@ -6,6 +6,7 @@ from boto.dynamodb2.table import Table
 
 DYNAMO_REGION = 'us-west-2'
 
+
 class CorgiCache:
     def __init__(self):
         self.dynamo = boto.dynamodb2.connect_to_region(DYNAMO_REGION)
@@ -29,3 +30,6 @@ class CorgiCache:
                     raise ValueError
                 batch.put_item(data=item)
         return
+
+    def get_all_feeds(self):
+        return self.feeds.scan()
