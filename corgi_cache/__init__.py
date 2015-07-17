@@ -10,7 +10,7 @@ DYNAMO_REGION = 'us-west-2'
 class CorgiCache:
     def __init__(self):
         self.dynamo = boto.dynamodb2.connect_to_region(DYNAMO_REGION)
-        self.feeds = Table('feeds', connection=self.dynamo)
+        self.feeds = Table('Feeds', connection=self.dynamo)
         return
 
     def feed_id_exists(self, feed_id):
