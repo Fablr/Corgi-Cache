@@ -1,6 +1,7 @@
 __author__ = 'Chris Day'
 __publisher__ = 'Fabler'
 
+import logging
 import boto.dynamodb2
 from boto.dynamodb2.table import Table
 
@@ -19,6 +20,7 @@ class CorgiCache:
 
     def put_feed(self, data):
         if 'ID' not in data or 'URL' not in data:
+            logging.debug("invalid item, {0}".format(data))
             raise ValueError
         self.feeds.put_item(data=data)
         return
@@ -26,7 +28,8 @@ class CorgiCache:
     def put_feed_batch(self, data):
         with self.feeds.batch_write() as batch:
             for item in data:
-                if 'ID' not in item or 'URL' not in data:
+                if 'ID' not in item or 'URL' not in item:
+                    logging.debug("invalid item, {0}".format(item))
                     raise ValueError
                 batch.put_item(data=item)
         return
