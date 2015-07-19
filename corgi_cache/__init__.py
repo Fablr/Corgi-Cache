@@ -12,6 +12,7 @@ class CorgiCache:
     def __init__(self):
         self.dynamo = boto.dynamodb2.connect_to_region(DYNAMO_REGION)
         self.feeds = Table('Feeds', connection=self.dynamo)
+        self.tokens = Table('Tokens', connection=self.dynamo)
         return
 
     def feed_id_exists(self, feed_id):
@@ -36,3 +37,18 @@ class CorgiCache:
 
     def get_all_feeds(self):
         return self.feeds.scan()
+
+    def get_token(self, use):
+        items = list(self.tokens.query_2(USE__eq=use))
+        if len(items) > 1:
+            raise ValueError
+
+        item = items[0]
+        return item
+
+    def update_token(self, token):
+        if 'USE' not in token or 'TOKEN' not in token or 'REFRESH_TOKEN' not in token:
+            logging.debug("invalid token, {0}".format(token))
+            raise ValueError
+        self.tokens.put_item(data=token)
+        return
